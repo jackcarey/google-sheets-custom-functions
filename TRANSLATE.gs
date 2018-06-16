@@ -6,8 +6,16 @@
 * @param {"en"} from Optional. The source language.
 */
 function TRANSLATE(str,to,from){
-  var cache = CacheService.getDocumentCache();
+      if(to?false:true){
+      var locale = SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetLocale();
+      to = locale.substring(0,locale.indexOf("_")).toLowerCase();
+    }
+  if(from==undefined || from==null){
+    from = "";
+  }
   var key = from + "-" + to + "-" + encodeURIComponent(str);
+  if(str?true:false){
+  var cache = CacheService.getDocumentCache();
   var cached = cache.get(key);
   if(cached?true:false){
    return cached;
@@ -15,5 +23,8 @@ function TRANSLATE(str,to,from){
     var value = LanguageApp.translate(str, from, to);
     cache.put(key, value,21600);
     return value;
+  }
+  }else{
+    throw new Error("no 'str'");
   }
 }
