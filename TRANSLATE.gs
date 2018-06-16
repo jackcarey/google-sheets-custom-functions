@@ -6,10 +6,8 @@
 * @param {"en"} from Optional. The source language.
 */
 function TRANSLATE(str,to,from){
-      if(to?false:true){
-      var locale = SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetLocale();
-      to = locale.substring(0,locale.indexOf("_")).toLowerCase();
-    }
+  var locale = SpreadsheetApp.getActiveSpreadsheet().getSpreadsheetLocale();
+  to = to ? to : locale.substring(0,locale.indexOf("_")).toLowerCase();
   if(from==undefined || from==null){
     from = "";
   }
@@ -25,6 +23,6 @@ function TRANSLATE(str,to,from){
     return value;
   }
   }else{
-    throw new Error("no 'str'");
+    throw new Error(LanguageApp.translate("No 'str'","en",to));
   }
 }
