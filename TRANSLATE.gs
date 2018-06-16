@@ -2,11 +2,10 @@
 * Translate from one language to another.
 *
 * @param {"Hello World"} str The string to translate.
-* @param {"en"} from Optional. The source language.
 * @param {"fr"} to The target language.
-* @customfunction
+* @param {"en"} from Optional. The source language.
 */
-function TRANSLATE(str,from,to){
+function TRANSLATE(str,to,from){
   var cache = CacheService.getDocumentCache();
   var key = from + "-" + to + "-" + encodeURIComponent(str);
   var cached = cache.get(key);
