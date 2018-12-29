@@ -5,7 +5,7 @@
 */
 function FORMULATEXT(refStr){
   return refStr && refStr.map
-  ? refStr.map(FORMULATEXT2)
+  ? refStr.map(FORMULATEXT)
   : SpreadsheetApp.getActiveSpreadsheet().getRangeByName(refStr 
                                                          ? refStr
                                                          : SpreadsheetApp.getActiveRange().getA1Notation()
