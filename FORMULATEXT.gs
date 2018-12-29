@@ -4,10 +4,10 @@
 * @customfunction
 */
 function FORMULATEXT(refStr) {
-  if(!refStr){throw new Error("A reference must be provided.");}
-  if(refStr.map){
+  if(refStr && refStr.map){
     return refStr.map(FORMULATEXT);
   }else{
-    return SpreadsheetApp.getActiveSpreadsheet().getRangeByName(refStr).getFormulas().join("\n");
+    refStr = refStr ? refStr : SpreadsheetApp.getActiveRange().getA1Notation();
+    return SpreadsheetApp.getActiveSpreadsheet().getRangeByName(refStr).getFormulas().join("");
   }
 }
