@@ -33,8 +33,8 @@ var keys = Object.keys(obj);
   }
   
   secs = secs && !isNaN(secs) ? Math.max(1,Math.min(21600,secs)) : 21600;
-  if(lock){
-    lock.waitLock(secs);
+  if(lock!=null && lock!=undefined && lock!="" && lock !=false){
+    var success = lock.tryLock(secs); //lock.waitLock(secs);
   }
   if(obj=="ALL"){
     var stored = props.getProperties();
@@ -43,6 +43,13 @@ var keys = Object.keys(obj);
       CacheService.getDocumentCache().putAll(stored,secs);
     }
     
+          if(lock!=null && lock!=undefined && lock!="" && lock !=false){
+                      try{
+            if(lock.hasLock()){
+          lock.releaseLock();
+            }
+          }catch(e){}
+      }
     return tryParse(stored);
     
   }else if(obj && typeof obj=="object"){
@@ -59,8 +66,12 @@ var keys = Object.keys(obj);
       }
       props.setProperties(allProps,false);
       
-      if(lock){
-        lock.releaseLock();
+      if(lock!=null && lock!=undefined && lock!="" && lock !=false){
+                  try{
+            if(lock.hasLock()){
+          lock.releaseLock();
+            }
+          }catch(e){}
       }
       
       return tryParse(obj);
@@ -69,7 +80,13 @@ var keys = Object.keys(obj);
       var rKeys = obj ? Object.keys(obj) : [];
       var cached = cache ? cache.getAll(rKeys) : {};
       if(Object.keys(cached).sort().join() == Object.keys(rKeys).sort().join()){ 
-        if(lock){lock.releaseLock();}
+        if(lock!=null && lock!=undefined && lock!="" && lock !=false){
+                    try{
+            if(lock.hasLock()){
+          lock.releaseLock();
+            }
+          }catch(e){}
+        }
         return cached;
       }else{
         var allProps = props.getProperties();
@@ -81,8 +98,13 @@ var keys = Object.keys(obj);
           obj[key] = allProps[key]!=null ? allProps[key] : obj[key];
         }
         
-        if(lock){lock.releaseLock();}
-        
+        if(lock!=null && lock!=undefined && lock!="" && lock !=false){
+          try{
+            if(lock.hasLock()){
+          lock.releaseLock();
+            }
+          }catch(e){}
+        }
         return tryParse(obj);
         
       }
