@@ -33,6 +33,9 @@ function UNIQUE_2D(range,sortType,displayCounts) {
       array.push([key,obj[key]]);
     }
     
+    //default sort = alphanumerical
+    array.sort();
+    
     if(sortType==2 || sortType==3){
       array.sort(function(a, b) {
         return sortType==2 ? a[1] - b[1] : b[1] - a[1];
