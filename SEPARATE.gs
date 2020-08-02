@@ -20,7 +20,7 @@ Dog | Daschund | Black | Buddy
 */
 
 /**
-* Duplicate rows of data based on a string that is concatenated in a certain column.
+* Split up concatenated data in a column by duplicating rows.
 * @param {[]} data 2D array of data to separate. Required.
 * @param {12} column If number, column number to check. If string, will find column number automatically based on row 1. Default: 1.
 * @param {" "} splitBy The character/string to split the column by. Default: comma (,).
