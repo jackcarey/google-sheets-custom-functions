@@ -7,7 +7,7 @@ Dog | Daschund | Black | Milo,Deano,Bella,Buddy
 
 Formula:
 
-=SEPARATE(data, "NAMES", ",")
+=EXPLODE(data, "NAMES", ",")
 
 Result:
 
@@ -26,7 +26,7 @@ Dog | Daschund | Black | Buddy
 * @param {" "} splitBy The character/string to split the column by. Default: comma (,).
 * @customfunction
 */
-function SEPARATE(data,column,splitBy) {
+function EXPLODE(data,column,splitBy) {
   if(!data) throw new Error("data is required");
   var hasHeader = false;
   var output = [];
