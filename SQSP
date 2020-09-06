@@ -18,7 +18,7 @@ function _validate_type(type){
 /* Return info from Squarespace
 * @param {"12345..."} key Your API key.
 * @param {6} age The age of results in hours. 1-6. Default: 1.
-* @param {"orders"} type 'inventory', 'orders' or 'transactions'. Default: orders.
+* @param {"orders"} type 'inventory', 'orders' 'transactions' or 'products'. Default: orders.
 * @param {TRUE} includeTimestamp Should the timestamp of when data was fetch be included in the results. Default: TRUE.
 * @customfunction
 */
