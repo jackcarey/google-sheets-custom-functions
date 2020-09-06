@@ -7,7 +7,7 @@
 * @param {[]} options An array of numbers.
 * @param {123} target The value you want to reach.
 * @param {0} mode 0=strict, (Not yet implemented: 1=overshoot, 2=undershoot, 3=closest, 4=fractions). Default: 0;
-* @param {FALSE} subtotals Whether each row will include a column containing a subtotal. Default: FALSE.
+* @param {FALSE} subtotals Include a a subtotal in each row. Default: FALSE.
 * @customfunction
 */
 function GREEDY(options,target,mode=0,subtotals=false) {
@@ -41,16 +41,18 @@ function GREEDY(options,target,mode=0,subtotals=false) {
     var signsMatch = target<0 ? value<0 : value>0;
     if(signsMatch){
       //get as close as possible before the mode affects the output
-      var count = Math.floor(total/value); //HOW DO WE AVOID FLOATING POINT ISSUES HERE
+      var count = Math.floor(total/value);
       if(count>=1){
         var subtotal = count*value;
       total -= subtotal;
       //round to max number of decimal places to avoid floating point issues
       total = total.toFixed(maxDP).valueOf();
-      output[i][1] = count;
+      output[i][1] = count.toFixed(maxDP).valueOf();
         if(subtotals){
           output[i][2] = subtotal;
         }
+      }else{
+        output[i][1] = output[i][1].toFixed(maxDP);
       }
     }
   }
@@ -68,7 +70,13 @@ function GREEDY(options,target,mode=0,subtotals=false) {
           if(subtotals) output[lastRowIndex][2] = output[lastRowIndex][0]*output[lastRowIndex][1];
           break;
         case 3: //closest
-          //TODO
+          var newDiff = target - (total+output[lastRowIndex][0]);
+          if(newDiff<total){
+            //add 1 to count
+          output[lastRowIndex][1]+=1;
+          //update the subtotal column
+          if(subtotals) output[lastRowIndex][2] = output[lastRowIndex][0]*output[lastRowIndex][1];
+          }
           break;
         case 4: //fractions
           //add the fraction to the count
