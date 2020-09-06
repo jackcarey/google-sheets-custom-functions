@@ -7,6 +7,7 @@ An incomplete list of custom functions I've made for Google Sheets. Documentatio
 * **FORMULATEXT** - Return the formula for a given cell. Now redundent, use built-in FORMULA() function instead.
 * **IFBLANK** - Like IFERROR, but for blank cells.
 * **INSTANCE_NUMBER** - Return an array of instance numbers corresponding to items in a one-dimensional list.
+* **RANDOM** - Return a random number between 1 and 0, or between a range. This function replicates RAND() and RANDBETWEEN(), so random values can be used as inputs to custom functions.
 * **RANGELINK** - Return a URL linking to a specific cell/range.
 * **SQSP** - Return inventory,order,product, and transaction information from Squarespace.
 * **TESCO_GROCERY** - Return grocery information via [Tescos API](https://devportal.tescolabs.com/).
