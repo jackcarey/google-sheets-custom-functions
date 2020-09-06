@@ -11,8 +11,8 @@ function RANDOM(max,min){
     min = 0;
   }
   if(max){
-    min = min ? Math.ceil(min) : 0;
-    max = Math.floor(max);
+    min = min && !isNaN(min) ? Math.ceil(min) : 0;
+    max = max && !isNaN(max) ? Math.floor(max): 1;
     return Math.floor(Math.random() * (max - min + 1) + min); //The maximum is inclusive and the minimum is inclusive
   }else{
     return Math.random();

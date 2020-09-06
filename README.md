@@ -5,6 +5,7 @@ An incomplete list of custom functions I've made for Google Sheets. Documentatio
 * **CELLWIDTH** - Get the width of a cell in pixels.
 * **EXPLODE** - Split up concatenated data in a column by duplicating rows.
 * **FORMULATEXT** - Return the formula for a given cell. Now redundent, use built-in FORMULA() function instead.
+* **GREEDY**  - Return the minimum count of each given option needed to reach a target.
 * **IFBLANK** - Like IFERROR, but for blank cells.
 * **INSTANCE_NUMBER** - Return an array of instance numbers corresponding to items in a one-dimensional list.
 * **RANDOM** - Return a random number between 1 and 0, or between a range. This function replicates RAND() and RANDBETWEEN(), so random values can be used as inputs to custom functions.
