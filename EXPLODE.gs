@@ -29,7 +29,6 @@ Dog | Daschund | Black | Buddy
 function EXPLODE(data,column,splitBy) {
   if(!data) throw new Error("data is required");
   var hasHeader = false;
-  var output = [];
   splitBy = splitBy || ",";
   if(isNaN(column) && data[0].indexOf(column)>-1){ //try to find the column name in the header row
     hasHeader = true;
@@ -37,6 +36,8 @@ function EXPLODE(data,column,splitBy) {
   }else{
     column = !isNaN(column) && column>0 ? (column-1) : 0; //take 1 to make the column 0 indexed.
   }
+  var output = [];
+  if(hasHeader) output[0] = data[0];
   for(var i=(hasHeader?1:0);i<data.length;++i){
     var originalRow = data[i];
     var outputRow = data[i].slice();
