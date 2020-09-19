@@ -17,4 +17,5 @@ An incomplete list of custom functions I've made for Google Sheets. Documentatio
 * **UNIQUE_2D (minimal)** - Return a 1-dimensional list of unique items from a 2D array. Unique values are checked by cell content, not whole row content.
 * **UNIQUE_2D** - Return a 1-dimensional list of unique items from a 2D array. Unique values are checked by cell content, not whole row content. Includes options for sorting and displaying the item counts.
 * **WALKING_SECONDS** - Return the number of seconds required to walk the first route between two locations. Data from Google Maps.
+* **file URLs to Drive** - Save files from a list of URLs into dynamic locations on Google Drive based on column headings.
 * **store function** - A helper function for saving and returning data from the Cache and Properties services.
