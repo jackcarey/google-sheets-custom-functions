@@ -19,7 +19,7 @@ function GREEDY(options,target,mode=0,subtotals=false,excludeZero=false) {
   mode = mode<=0 ? 0 : (mode>=4 ? 4 : Math.floor(mode));
   //ensure options is a 1D array of unique values, sorted in descending order
   options = _UNIQUE_2D(options);
-  options.sort(function(a,b){return b-a;});
+  options.sort(function(a,b){return parseFloat(b)-parseFloat(a);});
   //set up variables
   var output = new Array(options.length);
   var total = target;
@@ -57,6 +57,7 @@ function GREEDY(options,target,mode=0,subtotals=false,excludeZero=false) {
       }
     }
   }
+  
   //now the mode is applied if we haven't hit our target
   if(total>0){
   var lastRowIndex = 0;
@@ -107,38 +108,24 @@ function GREEDY(options,target,mode=0,subtotals=false,excludeZero=false) {
 
 /**
 * Helper function.
-* Return unique values from across a 2D range, ignoring empty cells.
-* Stripped down version of https://github.com/jackcarey/google-sheets-custom-functions/blob/master/UNIQUE_2D.gs
+* Return unique values from across a 2D range.
+* Modified to exclude empty cells - from: https://github.com/jackcarey/google-sheets-custom-functions/blob/master/UNIQUE_2D%20(minimal).gs
 * @param {[[]]} range The input values.
 */
-function _UNIQUE_2D(range) {
-  if(range){
-    var obj = {};
-    for(var i=0;i<range.length;++i){
-      for(var j=0;j<range[0].length;++j){
-        var val = range[i][j].toString();
-        var keys = Object.keys(obj);
-        if(val!=undefined && val!=null && val!=""){
-          //if the item is not in the output
-          if(keys.indexOf(val)==-1){
-            //add it
-            obj[val] = 1;
-          }else{
-            //if the item is already in the output add 1 to its count
-            obj[val]+=1;
-          }
-      }
+
+function _UNIQUE_2D(range){
+  if(!range) return;
+  var oneD = [];
+  //flatten the 2D array to 1D
+  for(var i=0;i<range.length;++i){
+    for(var j=0;j<range[i].length;++j){
+      if(range[i][j]!=""){
+        oneD.push(range[i][j]);
       }
     }
-    var array = [];
-    for(var k=0;k<keys.length;++k){
-      var key = keys[k];
-      array.push([key,obj[key]]);
-    }
-    //remove counts
-      for(var l=0;l<array.length;++l){
-        array[l] = array[l][0];
-      }    
-    return array;
   }
+  //filter and return the unique values
+  return oneD.filter(function (value, index, self) { 
+    return self.indexOf(value) === index;
+  });
 }
