@@ -79,10 +79,11 @@ function GREEDY(options,target,mode=0,subtotals=false,excludeZero=false) {
           if(subtotals) output[lastRowIndex][2] = output[lastRowIndex][0]*output[lastRowIndex][1];
           break;
         case 3: //closest
-          var newDiff = target - (total+output[lastRowIndex][0]);
-          if(newDiff<total){
+          var oldDiff = parseFloat(total);
+          var newDiff = output[lastRowIndex][0] - oldDiff;
+          if(newDiff < oldDiff){
             //add 1 to count
-          output[lastRowIndex][1]+=1;
+          output[lastRowIndex][1] = parseFloat(output[lastRowIndex][1]) + 1;
           //update the subtotal column
           if(subtotals) output[lastRowIndex][2] = output[lastRowIndex][0]*output[lastRowIndex][1];
           }
