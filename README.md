@@ -3,6 +3,7 @@ An incomplete list of custom functions I've made for Google Sheets. Documentatio
 
 * **ARRAYSTRING** - Join 2D arrays using separate row and column delimitators.
 * **CELLWIDTH** - Get the width of a cell in pixels.
+* **EXCEL_LINK** - Return a link to export the current document in .xlsx format.
 * **EXPLODE** - Split up concatenated data in a column by duplicating rows.
 * **FORMULATEXT** - Return the formula for a given cell. Now redundent, use built-in FORMULA() function instead.
 * **GREEDY**  - Return the minimum count of each given option needed to reach a target.
