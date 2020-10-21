@@ -23,15 +23,18 @@ function walking_seconds(origin, destination) {
     }
     return stored;
   }else{
-  var directions = getDirections_(origin, destination),
-      legs = directions.routes[0].legs;
-  var walkSeconds = 0;
+  var directions = getDirections_(origin, destination);
+      var walkSeconds = null;
+    if(directions && directions.routes){
+  var legs = directions.routes[0].legs;
     for(var i=0;i<legs.length;i++){
       walkSeconds += legs[i].duration.value;
     }
     try{
+      cache.put(key, walkSeconds);
     props.setProperty(key,walkSeconds);
     }catch(e){}
+    }
   return walkSeconds;
   }
 }
