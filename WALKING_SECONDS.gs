@@ -53,8 +53,11 @@ function getDirections_(origin, destination, mode) {
   directionFinder.setOrigin(origin);
   directionFinder.setDestination(destination);
   var directions = directionFinder.getDirections();
+  if(!directions || (directions.error_message="ZERO_RESULTS")){
+    throw new Error("No results");
+  }
   if (directions.status !== 'OK') {
-    throw directions.error_message;
+    throw new Error(directions.error_message||directions.status);
   }
   return directions;
 }
