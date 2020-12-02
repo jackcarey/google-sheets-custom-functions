@@ -5,6 +5,7 @@ An incomplete list of custom functions I've made for Google Sheets. Documentatio
 * **CELLWIDTH** - Get the width of a cell in pixels.
 * **EXCEL_LINK** - Return a link to export the current document in .xlsx format.
 * **EXPLODE** - Split up concatenated data in a column by duplicating rows.
+* **FIZZBUZZ** - Return an array of fizz buzz results.
 * **FORMULATEXT** - Return the formula for a given cell. Now redundent, use built-in FORMULA() function instead.
 * **GREEDY**  - Return the minimum count of each given option needed to reach a target.
 * **IFBLANK** - Like IFERROR, but for blank cells.
