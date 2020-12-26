@@ -10,6 +10,7 @@ An incomplete list of custom functions I've made for Google Sheets. Documentatio
 * **GREEDY**  - Return the minimum count of each given option needed to reach a target.
 * **IFBLANK** - Like IFERROR, but for blank cells.
 * **INSTANCE_NUMBER** - Return an array of instance numbers corresponding to items in a one-dimensional list.
+* **PERIODIC_AMOUNTS** - Return dates that an amount would appear over a given period
 * **PERMUTE** - Return all combinations of items from the columns of the input.
 * **RANDOM** - Return a random number between 1 and 0, or between a range. This function replicates RAND() and RANDBETWEEN(), so random values can be used as inputs to custom functions.
 * **RANGELINK** - Return a URL linking to a specific cell/range.
