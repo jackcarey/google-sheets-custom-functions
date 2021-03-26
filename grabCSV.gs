@@ -5,10 +5,10 @@ function scheduled() {
 /*
 * url - The URL to fetch from
 * shettName - The destination
-* lockSheet - Should the destination be protected (warning-only). Optional. Default: true
+* lockSheet - A message to protect the destination with (warning-only). Optional. Default: null (unprotected)
 * timestamp - Where to place a timestamp for this import. A1 notation. Optional. Default: null
 */
-function grabCSV(url, sheetName, lockSheet=true, timestampA1=null) {
+function grabCSV(url, sheetName, lockMsg=null, timestampA1=null) {
   var response = UrlFetchApp.fetch(url);
   var status = response.getResponseCode();
   if (status >= 200 && status < 300) {
@@ -19,8 +19,8 @@ function grabCSV(url, sheetName, lockSheet=true, timestampA1=null) {
       sheet = ss.insertSheet();
       sheet.setName(sheetName);
     }
-    if (lockSheet) {
-      sheet.protect().setDescription("Protected for CSV import").setWarningOnly(true);
+    if (lockMsg!=null) {
+      sheet.protect().setDescription(lockMsg).setWarningOnly(true);
     }
 
     var length = data.length;
