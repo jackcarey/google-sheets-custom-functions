@@ -45,7 +45,7 @@ function grabCSV(url, sheetName=null, lockMsg=null, timestampA1=null) {
     sheet.getRange(1, 1, length, width).setValues(data);
 
     if (timestampA1 != null && ss.getRange(timestampA1) != null) {
-      ss.getRange(timestampAddress).setValue(new Date());
+      ss.getRange(timestampA1).setValue(new Date());
     }
   } else {
     console.error("Status: " + status);
