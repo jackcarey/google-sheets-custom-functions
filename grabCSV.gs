@@ -4,16 +4,27 @@ function scheduled() {
 
 /*
 * url - The URL to fetch from
-* shettName - The destination
+* sheetName - The destination sheet. Default: Last section of URL pathname.
 * lockSheet - A message to protect the destination with (warning-only). Optional. Default: null (unprotected)
 * timestamp - Where to place a timestamp for this import. A1 notation. Optional. Default: null
 */
-function grabCSV(url, sheetName, lockMsg=null, timestampA1=null) {
+function grabCSV(url, sheetName=null, lockMsg=null, timestampA1=null) {
   var response = UrlFetchApp.fetch(url);
   var status = response.getResponseCode();
   if (status >= 200 && status < 300) {
     var data = Utilities.parseCsv(response.getContentText());
     var ss = SpreadsheetApp.getActiveSpreadsheet();
+    if(sheetName==null){
+
+      let strings = url.split("/");
+      let len = strings.length;
+      let last = strings[len-1];
+      if(last==null || last.length==0){
+        last = strings[len-2];
+      }
+      let name = decodeURIComponent(last).replace(".csv","");
+      sheetName = name;
+    }
     var sheet = ss.getSheetByName(sheetName);
     if (sheet == null) {
       sheet = ss.insertSheet();
