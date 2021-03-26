@@ -1,5 +1,5 @@
 function scheduled() {
-  grabCSV("https://example.com/file.csv", "CSV Import", true, "Sheet1!A1");
+  grabCSV("https://example.com/file.csv", "CSV Import", "Protected for CSV import", "Sheet1!A1");
 }
 
 /*
