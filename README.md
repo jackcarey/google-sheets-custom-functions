@@ -3,6 +3,7 @@ An incomplete list of custom functions I've made for Google Sheets. Documentatio
 
 * **ARRAYSTRING** - Join 2D arrays using separate row and column delimitators.
 * **CELLWIDTH** - Get the width of a cell in pixels.
+* **COLUMN_JOIN** - Join columns by row, optionally prefixing with the column header.
 * **EXCEL_LINK** - Return a link to export the current document in .xlsx format.
 * **EXPLODE** - Split up concatenated data in a column by duplicating rows.
 * **FIZZBUZZ** - Return an array of fizz buzz results.
