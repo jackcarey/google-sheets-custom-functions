@@ -22,7 +22,7 @@ function COLUMN_JOIN(data, char = ",", prefixHeaders = true) {
         }
       }
     }
-    if(rowStr.substr(-1)==","){
+    if(rowStr.substr(-1)==char){
       rowStr = rowStr.substring(0,rowStr.length-1);
     }
     res.push(rowStr);
