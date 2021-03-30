@@ -43,6 +43,7 @@ function grabCSV(url, sheetName=null, lockMsg=null, timestampA1=null) {
     });
     sheet.clear();
     sheet.getRange(1, 1, length, width).setValues(data);
+    sheet.setFrozenRows(1);
 
     if (timestampA1 != null && ss.getRange(timestampA1) != null) {
       ss.getRange(timestampA1).setValue(new Date());
