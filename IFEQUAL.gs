@@ -7,5 +7,5 @@
  * @customfunction
  */
 function IFEQUAL(first,second,value="",strict=false){
-  return strict ? (first === second ? value : first) : (first == second ? value : first);
+  return (strict ? (first === second) : (first == second)) ? value : first;
 }
