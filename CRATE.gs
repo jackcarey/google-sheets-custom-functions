@@ -21,14 +21,13 @@ function CRATE(options, target, showTotals = true, isInclusive = true, hasHeadin
   const total = (crate) => Object.keys(crate).reduce((sum, key) => sum + crate[key], 0);
   //function to return the potential options to help fill a crate, in desc. order
   const valid = (options, crate) => {
-    options.sort((a, b) => b[1] - a[1]);
     return options.filter(option => {
       if (isInclusive) {
         return option[1] + total(crate) <= target;
       } else {
         return option[1] + total(crate) < target;
       }
-    });
+    }).sort((a, b) => b[1] - a[1]);
   };
   while (options.length > 0) {
     let crate = {};
@@ -48,10 +47,8 @@ function CRATE(options, target, showTotals = true, isInclusive = true, hasHeadin
   }
   //if the loop had to exit early
   //remaining options will be thrown into their own crates
-  if (options.length) {
-    for (let option of options) {
-      results.push(option);
-    }
+  for (let option of options) {
+    results.push(option);
   }
   if (!showTotals) {
     results.forEach(row => delete row[1]);
