@@ -9,7 +9,7 @@
  * @return {[]} An array of combinations
  * @customfunction
  */
-function CRATE(options, target, showTotals=true, isInclusive = true, hasHeadings = true, joinChar = ", ") {
+function CRATE(options, target, showTotals = true, isInclusive = true, hasHeadings = true, joinChar = ", ") {
   let results = [];
   if (hasHeadings) {
     results = [options[0]];
@@ -32,6 +32,10 @@ function CRATE(options, target, showTotals=true, isInclusive = true, hasHeadings
   };
   while (options.length > 0) {
     let crate = {};
+    //if there are no valid options for this crate then stop the loop
+    if (!valid(options, crate).length) {
+      break;
+    }
     while (valid(options, crate).length) {
       let largest = valid(options, crate)[0];
       let key = largest[0];
@@ -40,10 +44,17 @@ function CRATE(options, target, showTotals=true, isInclusive = true, hasHeadings
       //remove this option so it won't be used twice
       options = options.filter(option => option[0] != key);
     }
-    results.push([Object.keys(crate).sort().join(joinChar),total(crate)]);
+    results.push([Object.keys(crate).sort().join(joinChar), total(crate)]);
   }
-  if(!showTotals){
-    results.forEach(row=>delete row[1]);
+  //if the loop had to exit early
+  //remaining options will be thrown into their own crates
+  if (options.length) {
+    for (let option of options) {
+      results.push(option);
+    }
+  }
+  if (!showTotals) {
+    results.forEach(row => delete row[1]);
   }
   return results;
 }
