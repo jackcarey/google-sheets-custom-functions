@@ -22,6 +22,9 @@ function CRATE(options, target, showTotals = true, isInclusive = true, hasHeadin
   //function to return the potential options to help fill a crate, in desc. order
   const valid = (options, crate) => {
     return options.filter(option => {
+      if(!option[1] || isNaN(option[1])){
+        return false;
+      }
       if (isInclusive) {
         return option[1] + total(crate) <= target;
       } else {
