@@ -3,13 +3,13 @@
  * @param {A2:B} options Two column array. First column: labels, second column: values
  * @param {250} target The target to hit for each crate.
  * @param {TRUE} showTotals Should the total of each crate be returned in the result. Default: TRUE.
- * @param {TRUE} isInclusive Is the target inclusive of or less than its value. Default: TRUE.
  * @param {TRUE} hasHeadings Do the options have headings in row 1? Default: TRUE.
  * @param {", "} joinChar The character or string to join options with
+ * @param {"*"} overPrefix Mark items with a value greater than the target with this prefix. Default: none.
  * @return {[]} An array of combinations
  * @customfunction
  */
-function CRATE(options, target, showTotals = true, isInclusive = true, hasHeadings = true, joinChar = ", ") {
+function CRATE(options, target, showTotals = true, hasHeadings = true, joinChar = ", ", overPrefix = "") {
   let results = [];
   if (hasHeadings) {
     results = [options[0]];
@@ -22,14 +22,10 @@ function CRATE(options, target, showTotals = true, isInclusive = true, hasHeadin
   //function to return the potential options to help fill a crate, in desc. order
   const valid = (options, crate) => {
     return options.filter(option => {
-      if(!option[1] || isNaN(option[1])){
+      if (!option[1] || isNaN(option[1])) {
         return false;
       }
-      if (isInclusive) {
-        return option[1] + total(crate) <= target;
-      } else {
-        return option[1] + total(crate) < target;
-      }
+      return option[1] + total(crate) <= target;
     }).sort((a, b) => b[1] - a[1]);
   };
   while (options.length > 0) {
@@ -51,7 +47,7 @@ function CRATE(options, target, showTotals = true, isInclusive = true, hasHeadin
   //if the loop had to exit early
   //remaining options will be thrown into their own crates
   for (let option of options) {
-    results.push(option);
+    results.push([overPrefix + option[0], option[1]]);
   }
   if (!showTotals) {
     results.forEach(row => delete row[1]);
