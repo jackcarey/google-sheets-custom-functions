@@ -4,6 +4,7 @@ An incomplete list of custom functions I've made for Google Sheets. Documentatio
 * **ARRAYSTRING** - Join 2D arrays using separate row and column delimitators.
 * **CELLWIDTH** - Get the width of a cell in pixels.
 * **COLUMN_JOIN** - Join columns by row, optionally prefixing with the column header.
+* **CONTAINS** - Returns TRUE if any of the values in the range contain the term.
 * **CRATE** - Sort options into groups so their sum is as close to a target as possible.
 * **EVERY** - Returns TRUE if all of the values in the range have a truthy value.
 * **EXCEL_LINK** - Return a link to export the current document in .xlsx format.
