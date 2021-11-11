@@ -5,6 +5,7 @@ An incomplete list of custom functions I've made for Google Sheets. Documentatio
 * **CELLWIDTH** - Get the width of a cell in pixels.
 * **COLUMN_JOIN** - Join columns by row, optionally prefixing with the column header.
 * **CRATE** - Sort options into groups so their sum is as close to a target as possible.
+* **EVERY** - Returns TRUE if all of the values in the range have a truthy value.
 * **EXCEL_LINK** - Return a link to export the current document in .xlsx format.
 * **EXPLODE** - Split up concatenated data in a column by duplicating rows.
 * **FIZZBUZZ** - Return an array of fizz buzz results.
@@ -17,6 +18,7 @@ An incomplete list of custom functions I've made for Google Sheets. Documentatio
 * **PERMUTE** - Return all combinations of items from the columns of the input.
 * **RANDOM** - Return a random number between 1 and 0, or between a range. This function replicates RAND() and RANDBETWEEN(), so random values can be used as inputs to custom functions.
 * **RANGELINK** - Return a URL linking to a specific cell/range.
+* **SOME** - Returns TRUE if any of the values in the range have a truthy value.
 * **SQSP** - Return inventory,order,product, and transaction information from Squarespace.
 * **TESCO_GROCERY** - Return grocery information via [Tescos API](https://devportal.tescolabs.com/).
 * **TRANSLATE** - Translate strings from one language to another. Now redundent, use built-in GOOGLETRANSLATE() function instead.
