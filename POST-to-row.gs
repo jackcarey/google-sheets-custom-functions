@@ -5,30 +5,6 @@
  */
 
 /**
- * Turn a column number into letters
- */
-function columnToLetter(column) {
-  var temp, letter = '';
-  while (column > 0) {
-    temp = (column - 1) % 26;
-    letter = String.fromCharCode(temp + 65) + letter;
-    column = (column - temp - 1) / 26;
-  }
-  return letter;
-}
-
-/**
- * Turn column letters into a number
- */
-function letterToColumn(letter) {
-  var column = 0, length = letter.length;
-  for (var i = 0; i < length; i++) {
-    column += (letter.charCodeAt(i) - 64) * Math.pow(26, length - i - 1);
-  }
-  return column;
-}
-
-/**
  * When a POST request is made to this Web App endpoint, add the passed object to the named sheet as a new row.
  * Assumes headings are in row 1.
  */
@@ -75,3 +51,27 @@ const doPost = (event = {}) => {
   }
   return ContentService.createTextOutput(JSON.stringify(resultObj)).setMimeType(ContentService.MimeType.JSON);
 };
+
+/**
+ * Turn a column number into letters
+ */
+function columnToLetter(column) {
+  var temp, letter = '';
+  while (column > 0) {
+    temp = (column - 1) % 26;
+    letter = String.fromCharCode(temp + 65) + letter;
+    column = (column - temp - 1) / 26;
+  }
+  return letter;
+}
+
+/**
+ * Turn column letters into a number
+ */
+function letterToColumn(letter) {
+  var column = 0, length = letter.length;
+  for (var i = 0; i < length; i++) {
+    column += (letter.charCodeAt(i) - 64) * Math.pow(26, length - i - 1);
+  }
+  return column;
+}
