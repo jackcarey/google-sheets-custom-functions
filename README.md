@@ -33,11 +33,12 @@ An incomplete list of custom functions I've made for Google Sheets. Documentatio
 * **SQSP** - Return inventory,order,product, and transaction information from Squarespace.
 * **TRAVEL_SECONDS** - Return the number of seconds required to travel the first route between two locations. Data from Google Maps.
 
-## Partial Code
+## Scripts or Partial Code
 
 * **file URLs to Drive** - Save files from a list of URLs into dynamic locations on Google Drive based on column headings.
 * **grabCSV.gs** - Import CSVs to a specific sheet. Designed to be run on a scheduled basis.
 * **store function** - A helper function for saving and returning data from the Cache and Properties services.
+* **POST-to-row** - Logs the parameter values of a POST request to then named sheet. Must be set up with a web app deployment.
 
 ## Redundant or Outdated
 
