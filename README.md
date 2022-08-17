@@ -14,6 +14,7 @@ An incomplete list of custom functions I've made for Google Sheets. Documentatio
 * **COLUMN_JOIN** - Join columns by row, optionally prefixing with the column header.
 * **PERIODIC_AMOUNTS** - Return dates that an amount would appear over a given period
 * **PERMUTE** - Return all combinations of items from the columns of the input.
+* **PERMUTE_VAR** - Return all combinations of items from a one-dimensional list, where combinations can have different lengths.
 
 ## Conditions / Checks
 
