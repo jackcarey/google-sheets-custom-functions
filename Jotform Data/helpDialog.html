@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <base target="_top" />
+        <?!= include('styles'); ?>
+        <?var callbackAction = (scriptCallback ? "google.script.run."+scriptCallback+"();" : "")+"google.script.host.close();"?>
+        <style>
+            .code {
+                font-family: "Inconsolata", monospace;
+                background: rgb(247, 247, 247);
+                border-radius: 3px;
+                padding: 0.5em 0.5em 0.5em 0.5em;
+            }
+
+            .super {
+                vertical-align: super;
+                font-size: 80%;
+            }
+
+            table {
+                border-spacing: 5px 0px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <span
+            >Form Data for Jotform allows you to return form data from
+            <a target="_blank" href="https://www.jotform.com/?referral=L7psRlOlDn">Jotform</a
+            >.</span
+        >
+        <br />
+        <div>
+            <h8>Set-up</h8>
+            <br />
+            <span
+                >1. Navigate to
+                <a target="_blank" href="https://www.jotform.com/myaccount/api"
+                    >jotform.com/myaccount/api</a
+                >.</span
+            >
+            <br />
+            <span>2. Press "Create a new key" or use an existing one.</span>
+            <br />
+            <span
+                >3. Copy the key into the
+                <a onclick="google.script.run.openDialog_SetUp('helpDialog')">key dialog</a>.</span
+            >
+        </div>
+        <div>
+            <span
+                >For full instructions, see
+                <a
+                    target="_blank"
+                    href="https://www.jotform.com/help/253-How-to-Create-a-JotForm-API-key?referral=L7psRlOlDn"
+                    >Jotform's website</a
+                >.</span
+            >
+        </div>
+        <br />
+        <div>
+            <h8>Imports &amp; Scheduling</h8>
+            <br />
+            <span
+                >Use the <a onclick="google.script.run.openDialog_Import()">Import sidebar</a> and
+                scheduling feature to import data from Jotform on a regular basis. They use the same
+                parameters as the custom function.</span
+            >
+        </div>
+        <div>
+            <h8>Custom Function</h8>
+            <br />
+            <span
+                >Enter <span class="code">=JOTFORM()</span> in any cell with the following
+                parameters:</span
+            >
+            <br />
+            <table>
+                <tr>
+                    <td>endpoint</td>
+                    <td>The endpoint to return. user, form, submission,report or folder.</td>
+                </tr>
+                <tr>
+                    <td>id</td>
+                    <td>The id of the record(s) to return. Not required by all endpoints.</td>
+                </tr>
+                <tr>
+                    <td>child</td>
+                    <td>A second-level endpoint to return. Not required by all endpoints.</td>
+                </tr>
+                <tr>
+                    <td>age</td>
+                    <td>
+                        Optional. Maximum age of cached results in hours. 0 = No limit. Default: 24.
+                    </td>
+                </tr>
+                <tr>
+                    <td>lite</td>
+                    <td>Optional. Return a reduced set of data. Default: FALSE.</td>
+                </tr>
+            </table>
+            <span class="secondary">Please note that large datasets can take a while to load.</span>
+        </div>
+        <br />
+        <button onclick="<?!=callbackAction?>">Close</button>
+        <a
+            style="margin-left: 10px"
+            class="button action"
+            target="_blank"
+            href="https://jackcarey.co.uk/projects/jotform-data/"
+            title="https://jackcarey.co.uk/projects/jotform-data/"
+            >Learn More</a
+        >
+        <!--<button style="margin-left:10px;" class="action" onclick="google.script.run.newVersionDialog('helpDialog')">New Version</button>-->
+        <br />
+        <span class="secondary"
+            >This add-on has no affiliation with Jotform Inc.
+            <i><?!= version ? "(v"+version+")" :""?></i></span
+        >
+    </body>
+</html>

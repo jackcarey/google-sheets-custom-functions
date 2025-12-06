@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <?!= include('styles'); ?>
+  <script>
+    function onSave(){
+        var saveButton = document.getElementById("saveCurrent");
+        saveButton.disabled = true;
+        saveButton.innerHTML="Saving";
+        var now = new Date();
+        var lastObj = {"sheet":"<?!=lastSheet?>",
+        "protectSheet": "<?!=lastProtectSheet?>",
+        "endpoint":"<?!=lastEndpoint?>",
+        "id":"<?!=lastId?>",
+        "child":"<?!=lastChild?>",
+        "lite":"<?!=lastLite?>",
+        "limit":"<?!=lastLimit?>",
+        "offset":"<?!=lastOffset?>",
+        "headerMode":"<?!=lastHeaderMode?>"
+        };
+        console.log(`lastObj`, lastObj);
+        var currNameElement = document.getElementById("currentName"),
+        currFreqElement = document.getElementById("currentFreq"),
+        currNameVal = currNameElement.value,
+        currFreqVal = currFreqElement.value;
+        lastObj.name = (currNameVal&&currNameVal.match(/[A-z0-9]*/g).join("")!="") ? currNameVal : [lastObj.sheet,lastObj.endpoint,lastObj.child,lastObj.id.substr(lastObj.id.length-14,14),now.getTime()].join(" ").substr(0,40);
+        lastObj.freq = currFreqVal ? Math.max(<?!=schedFreqHrs?schedFreqHrs:4?>,Math.round(currFreqVal)) : 24;
+        var lastId = lastObj.id;
+        lastObj.detail = "<?!=lastEndpoint+" "+lastChild+" on '"+(lastSheet).substr(0,14)+(lastSheet.length>14?"...":"")?>"+"'"+(lastId?("<br>ID: "+(lastId.length>14?"...":"")+lastId.substr(lastId.length-14,14)):"");
+        lastObj.title = "Sheet: "+lastObj.sheet
+        +"\nProtect: "+(lastObj.protectSheet.toString().toLowerCase()=="true"?true:false)
+        +"\nEndpoint: "+lastObj.endpoint
+        +"\nID: "+lastObj.id
+        +"\nChild: "+lastObj.child
+        +"\nLite: "+(lastObj.lite.toString().toLowerCase()=="true"?true:false)
+        +"\nLimit: "+lastObj.limit
+        +"\nOffset: "+lastObj.offset
+        +"\nHeader Mode: "+lastObj.headerMode;
+        lastObj.rowId = lastObj.name.match(/[A-z0-9]*/g).join("")+"-"+Math.round(Math.random()*100000);
+
+        google.script.run.withUserObject(lastObj).withFailureHandler(function(err,uO){ 
+          document.getElementById("errMsg").innerHTML = err.message;
+          document.getElementById("saveCurrent").disabled=false;
+          document.getElementById("saveCurrent").innerHTML="Save";
+        }).withSuccessHandler(function(rV,uO){
+        document.getElementById("errMsg").innerHTML = "";
+        var currNameElement = document.getElementById("currentName"),
+        currFreqElement = document.getElementById("currentFreq"),
+        currNameVal = currNameElement.value,
+        currFreqVal = currFreqElement.value;
+        var table = document.getElementById("storedschedules");
+        var row = table.insertRow(2),
+        nameCell = row.insertCell(0),
+        freqCell = row.insertCell(1),
+        actionCell = row.insertCell(2);
+        var rowId = uO.rowId;
+        row.id = rowId;
+        freqCell.title = "Runs every "+uO.freq+" hours";
+        freqCell.style.textAlign = "center";
+
+        nameCell.style.wordWrap = "break-word";
+        nameCell.style.maxWidth = "10em";
+        nameCell.innerHTML= (uO&&uO.name?uO.name:"JotformDataImport")+"<br><span style='float:right;' class='secondary' id='"+rowId+"-ts'></span>";
+        nameCell.title = lastObj.title;
+        var multiple = <?!=schedFreqHrs?schedFreqHrs:4?>;
+        freqCell.innerHTML=uO&&uO.freq? Math.round(uO.freq/multiple)*multiple :24;
+        actionCell.innerHTML = (
+        //"<a href='#' id='%sRunBtn' title='Run only this import' onclick='checkRow(this.id,this.innerHTML,1,\"%s\")'>Run</a><br><a href='#' id='%sCheckBtn' title='Check only this import' onclick='checkRow(this.id,this.innerHTML,0,\"%s\")'>Check</a><br>"+
+        "<a href='#' class='create' id='%sDeleteButton' title='This action cannot be undone' onclick='removeSched(\"%s\",this);'>Delete</a>").replace(new RegExp("%s","g"),rowId);
+        
+          document.getElementById("saveCurrent").disabled=false;
+          document.getElementById("saveCurrent").innerHTML="Save";
+        }).saveSchedule(JSON.stringify(lastObj));
+      }
+      
+      function removeSched(id,button){
+      if(button){
+        var onclick = button.getAttribute("onclick");
+        button.setAttribute("onclick","");
+        button.disabled=true;
+        button.innerHTML="Deleting";
+        button.className = "secondary";
+        }
+        google.script.run.withUserObject({"id":id,"onclick":onclick}).withFailureHandler(function(err,uO){
+        document.getElementById("errMsg").innerHTML = err.message;
+        var button = document.getElementById(id+"DeleteButton");
+          button.setAttribute("onclick",uO.onclick);
+          button.disabled=false;
+          button.className = "";
+          button.innerHTML="Delete";
+          }).withSuccessHandler(function(rV,uO){
+          document.getElementById("errMsg").innerHTML = "";
+        var el = document.getElementById(uO.id);
+    el.parentNode.removeChild(el);
+    }).removeSchedule(id);
+      }
+      
+      function loadSidebar(rowId,button){
+        var onclick = button.getAttribute("onclick");
+        button.setAttribute("onclick","");
+        button.disabled=true;
+        button.className="secondary";
+        button.innerHTML="Loading";
+        if(rowId){
+        google.script.run.withUserObject({"id":rowId,"onclick":onclick}).withFailureHandler(function(err,uO){
+          var id = uO.id;
+          document.getElementById("errMsg").innerHTML = err.message;
+          var button = document.getElementById(id+"LoadButton");
+          button.setAttribute("onclick",uO.onclick);
+          button.disabled=false;
+          button.className = "";
+          button.innerHTML="Load";
+          google.script.run.errorToast(err);
+          }).withSuccessHandler(function(rV,uO){
+          var id = uO.id;
+          document.getElementById("errMsg").innerHTML = "";
+          var button = document.getElementById(id+"LoadButton");
+          button.setAttribute("onclick",uO.onclick);
+          button.disabled=false;
+          button.className = "";
+          button.innerHTML="Load";
+          google.script.host.close();
+          }).openDialog_Import(rowId);
+      }
+      }
+
+      function checkRow(thisId,defaultValue,reset,rowId){
+          var now = new Date();
+         var el = document.getElementById(thisId);
+         el.disabled = true;
+         el.className="secondary";
+         el.innerHTML = "Running";        
+         google.script.run.withUserObject({"id":thisId,"default":defaultValue,"reset":reset,"rowId":rowId,"now":now}).withFailureHandler(function(err,uO){
+         document.getElementById("errMsg").innerHTML = err.message;
+           google.script.run.errorToast(err);
+           var el = document.getElementById(uO.id);
+         el.disabled = false;
+         el.className="";
+         el.innerHTML = uO.default;
+         }).withSuccessHandler(
+         function(rV,uO){
+           document.getElementById("errMsg").innerHTML = "";
+           google.script.run.withUserObject(uO).withFailureHandler(function(err,uO){
+           document.getElementById("errMsg").innerHTML = err.message;
+           google.script.run.errorToast(err);
+             var el = document.getElementById(uO.id);
+         el.disabled = false;
+         el.className="";
+         el.innerHTML = uO.default;
+           }).withSuccessHandler(function(rV,uO){
+           document.getElementById("errMsg").innerHTML = "";
+              if(rV){
+              if(uO.rowId){
+                var tsElement = document.getElementById(uO.rowId+"-ts");
+                tsElement.title = "Latest Scheduled Import: "+uO.now;
+                var mVal = parseInt(uO.now.getMonth())+1;
+                var month = mVal<10 ? "0"+mVal : mVal;
+                var time = uO.now.getHours() +":"+ uO.now.getMinutes();
+                tsElement.innerHTML = uO.now.getFullYear() +"-"+ month +"-"+ uO.now.getDate() +" "+ time;
+                                 var el = document.getElementById(uO.id);
+         el.disabled = false;
+         el.className="";
+         el.innerHTML = uO.default;
+              }else{
+               google.script.run.withUserObject(uO).withFailureHandler(function(err,uO){
+               document.getElementById("errMsg").innerHTML = err.message;
+               google.script.run.errorToast(err);
+                 var el = document.getElementById(uO.id);
+         el.disabled = false;
+         el.className="";
+         el.innerHTML = uO.default;
+               }).scheduleSidebar();
+               }}else{
+                 var el = document.getElementById(uO.id);
+         el.disabled = false;
+         el.className="";
+         el.innerHTML = uO.default;
+               }
+             }).scheduleCheck(null,uO.rowId);
+           }
+           ).checkTrigger(reset,rowId);
+      }
+      
+      function onChangeBtn(element){
+       element.disabled = true;
+       element.innerHTML="Loading";
+       google.script.run.openDialog_Import();
+      }
+  </script>
+</head>
+
+<body>
+  <div id="currentContainer"></div>
+  <table id="controls">
+    <tr>
+      <td><button onclick="onChangeBtn(this)">Back to Import</button></td>
+      <td>
+        <button id="runAllBtn" class="action" title="Force all schedules to run regardless of when they are due" onclick="checkRow(this.id,this.innerHTML,1);">Force All</button>
+      </td>
+      <td>
+        <button id="checkAllBtn" title="Run any outstanding schedules" onclick="checkRow(this.id,this.innerHTML,0);">Check All</button>
+      </td>
+    </tr>
+    <tr>
+      <td colspan="3" class="secondary">Hover over items for more information.
+        <br>
+        <span id="errMsg"></span>
+        <br>
+        <span title="<?!=currentTitle?currentTitle:""?>">
+    <b>Current settings:</b>
+      <br><span id="currSettings"><i><?!= lastEndpoint+" "+lastChild+" on '"+(lastSheet).substr(0,18)+(lastSheet.length>18?"...":"")+"'" ?></i></span>
+        </span>
+      </td>
+    </tr>
+  </table>
+
+  <table id="storedschedules">
+    <tr>
+      <th style="width:45%;" title="A descriptive name for the schedule">Name</th>
+      <th style="text-align:center;" title="The number of hours between imports">Freq. (hr)</th>
+      <th colspan="2">Action</th>
+    </tr>
+
+    <tr id="currentScheduleRow">
+      <td title="A descriptive name for the schedule."><input style="width:100%" id="currentName" type="text" placeholder="Be descriptive" maxLength="120"  autocomplete="off" value="<?!=lastIdTitle?lastIdTitle.substr(0,120):(lastEndpoint+" "+lastChild+" on "+lastSheet).substr(0,120)?>"/>
+      </td>
+      <td title="The number of hours between imports" style="text-align:center;"><input id="currentFreq" type="number" min="<?!=schedFreqHrs?schedFreqHrs:4?>" max="8760" step="<?!= schedFreqHrs ? schedFreqHrs : 4?>" value="24" placeholder="hours"/>
+      </td>
+      <td colspan="2">
+        <button id="saveCurrent" title="<?!=(lastId?.length || lastEndpoint.toLowerCase()=="user") ? "Save the current settings" : "ID is required" ?>" class="action" onclick="onSave();" <?!= (lastId||lastEndpoint.toLowerCase()=="user") ? "" : "disabled"?>>Save</button>
+      </td>
+    </tr>
+
+    <?for(var i=0;i<savedschedules.length;i++){?>
+    <tr id="<?!=savedschedules[i].rowId?>">
+      <td style="max-width:10em;word-wrap:break-word;" title="<?!=savedschedules[i].title?savedschedules[i].title:""?>">
+        <?!=savedschedules[i].name?>
+        <br><span id="<?!=savedschedules[i].rowId?>-ts" style="float:right;" class="secondary" <?if(savedschedules[i].lastRun){ var date = new Date(savedschedules[i].lastRun);?>title="Latest Scheduled Import: <?!=date?>"<?}?>><?if(savedschedules[i].lastRun){ var date = new Date(savedschedules[i].lastRun);?><?!=Utilities.formatDate(date,sheetTZ,"yyyy-MM-dd HH:mm")?><?}?></span>
+      </td>
+      <td style="text-align:center;" title="Runs every <?!=savedschedules[i].freq?> hours">
+        <?!=savedschedules[i].freq?>
+      </td>
+      <td>
+        <!--<a href="#" id="<?!=savedschedules[i].rowId?>RunBtn" title="Run only this import" onclick="checkRow(this.id,this.innerHTML,1,'<?!=savedschedules[i].rowId?>')">Run</a>
+    <br>
+    <a href="#" id="<?!=savedschedules[i].rowId?>CheckBtn" title="Check only this import" onclick="checkRow(this.id,this.innerHTML,0,'<?!=savedschedules[i].rowId?>')">Check</a>
+    <br>-->
+        <a href="#" id="<?!=savedschedules[i].rowId?>LoadButton" title="Load these settings into the sidebar"
+          onclick="loadSidebar('<?!=savedschedules[i].rowId?>',this);">Load</a>
+        <br>
+        <a href="#" title="This action cannot be undone" id="<?!=savedschedules[i].rowId?>DeleteButton"
+          onclick="removeSched('<?!=savedschedules[i].rowId?>',this);">Delete</a>
+      </td>
+    </tr>
+    <?}?>
+  </table>
+  <span id="lastTriggerCheck" class="secondary">Schedules are checked every <?!=schedFreqHrs?schedFreqHrs:4?> hours. <?!= lastTriggerCheck ? "Last triggered change: " + lastTriggerCheck : "" ?></span>
+</body>
+
+</html>

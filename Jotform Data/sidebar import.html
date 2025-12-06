@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <base target="_top" />
+        <?!= include('styles'); ?>
+        <style>
+            body {
+                padding: 0.5em;
+            }
+
+            #runMsg {
+                padding: 1em;
+                margin-top: 0.5em;
+                margin-bottom: 0.5em;
+            }
+
+            tr:first-child,
+            tr td label {
+                font-weight: bold;
+            }
+
+            input[disabled] {
+                background-color: #efefef;
+            }
+        </style>
+        <script>
+            function shortMsg(text) {
+                if (text) {
+                    let el = document.querySelector("#runMsg");
+                    el.innerText = text.toString();
+                    setTimeout(() => (el.innerText = ""), 5000);
+                }
+            }
+
+            function onDataTypeChange(selected) {
+                let subItemEl = document.querySelector("#subItem");
+                let idEl = document.querySelector("#id");
+                subItemEl.disabled = selected != "user" && selected != "form";
+                idEl.disabled = selected == "user";
+                idEl.required = selected != "user";
+                document
+                    .querySelectorAll("option.formOnly")
+                    .forEach((el) => (el.disabled = selected != "form"));
+                document
+                    .querySelectorAll("option.userOnly")
+                    .forEach((el) => (el.disabled = selected != "user"));
+                if (subItem.options[subItemEl.selectedIndex].disabled) {
+                    subItemEl.selectedIndex = 0;
+                }
+                onSubItemChange(subItemEl.value);
+            }
+
+            function onSubItemChange(value) {
+                document.querySelector("#limit").disabled = value != "submissions";
+            }
+
+            function getData() {
+                return {
+                    sheetName: document.querySelector("#sheetName").value,
+                    protected: document.querySelector("#protected").checked,
+                    data: document.querySelector("#dataType").value,
+                    lastId: document.querySelector("#id").value,
+                };
+            }
+
+            function onRun() {
+                try {
+                    let data = getData();
+                    let type = data["data"];
+                    if (type == "user" || type == "form") {
+                        let val = document.querySelector("#subItem").value;
+                        data["subItem"] = val;
+                        let subItem = data["subItem"];
+                        let valid = [];
+                        if (type == "user") {
+                            valid = [
+                                "",
+                                "usage",
+                                "submissions",
+                                "subusers",
+                                "folders",
+                                "reports",
+                                "forms",
+                                "settings",
+                            ];
+                        } else {
+                            valid = [
+                                "questions",
+                                "properties",
+                                "reports",
+                                "files",
+                                "webhooks",
+                                "submissions",
+                            ];
+                        }
+                        if (valid.indexOf(val) == -1) {
+                            shortMsg("❌ Invalid sub-item selected");
+                            return; //end the function there
+                        }
+                    }
+                    if (type != "user") {
+                        data["id"] = document.querySelector("#id").value;
+                    }
+                    let api = document.querySelector("#apiKey").value;
+                    if (api) {
+                        data["apiKey"] = api;
+                    }
+                    google.script.run
+                        .withSuccessHandler((returnValue, userObject) => {
+                            shortMsg(`✅ Import succeeded on sheet ${userObject["sheetName"]}`);
+                        })
+                        .withFailureHandler((error, userObject) => {
+                            // shortMsg(`❌ Import failed: ${error.message??JSON.stringify(error)}`);
+                        })
+                        .withUserObject(data)
+                        .JF_IMPORT_DATA(data);
+                } catch (e) {
+                    console.error(e);
+                    shortMsg("❌ " + e.message ?? JSON.stringify(e));
+                }
+            }
+
+            function openKeyDialog() {
+                google.script.run.openDialog_SetUp("openSidebar_Import");
+            }
+
+            function openSchedule() {
+                const currentSettings = getData();
+                google.script.run
+                    .withSuccessHandler((returnValue, userObject) => {})
+                    .withFailureHandler((error, userObject) => {
+                        shortMsg(error?.message ?? JSON.sstringify(error));
+                    })
+                    .scheduleSidebar(currentSettings);
+            }
+        </script>
+    </head>
+
+    <body>
+        <table>
+            <tr>
+                <td>
+                    <label for="sheetName"> Output Sheet </label>
+                </td>
+                <td>
+                    <select id="sheetName">
+                        <?for(i in sheetNames){
+        var option = sheetNames[i],
+        selected= option==lastSheetName ? "selected" : "";
+    ?>
+                        <option value="<?!=option?>" <?!="selected?">><?!=option?></option>
+                        <?}?>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="protected">Protected </label>
+                </td>
+                <td>
+                    <? if(lastProtected ?? false){?>
+                    <input type="checkbox" id="protected" checked />
+                    <?}else{?>
+                    <input type="checkbox" id="protected" />
+                    <?}?>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="dataType">Data</label></td>
+                <td>
+                    <select id="dataType" onchange="onDataTypeChange(this.value)">
+                        <option value="user">User</option>
+                        <option value="form">Form</option>
+                        <option value="report">Report</option>
+                        <option value="folder">Folder</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="subitem">Sub-item</label>
+                </td>
+                <!--only display for user and form -->
+                <td>
+                    <select id="subItem" onchange="onSubItemChange(this.value)">
+                        <option value="">None</option>
+                        <option value="reports">Reports</option>
+                        <option value="submissions">Submissions</option>
+                        <option value="folders" class="userOnly">Folders</option>
+                        <option value="forms" class="userOnly">Forms</option>
+                        <option value="settings" class="userOnly">Settings</option>
+                        <option value="subusers" class="userOnly">Subusers</option>
+                        <option value="usage" class="userOnly">Usage</option>
+                        <option value="files" class="formOnly">Files</option>
+                        <option value="properties" class="formOnly">Properties</option>
+                        <option value="questions" class="formOnly">Questions</option>
+                        <option value="webhooks" class="formOnly">Webhooks</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td><label for="id">ID</label></td>
+                <td><input id="id" placeholder="12345..." value="<?!=lastID?>" /></td>
+            </tr>
+            <tr>
+                <td><label for="limit">Limit</label></td>
+                <td>
+                    <input id="limit" type="number" min="1" steps="1" value="<?!=lastLimit?>" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <label for="apiKey">API Key</label>
+                    <br />
+                    <span class="secondary">if not the default</span>
+                </td>
+                <td>
+                    <input id="apiKey" placeholder="<?=apiPlaceholder?>" />
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <span class="secondary">This will overwrite data on the selected sheet.</span>
+                    <br />
+                    <button class="create" onclick="onRun()">Run</button>
+                    <button onclick="google.script.run.openDialog_Help()">Help</button>
+                </td>
+            </tr>
+        </table>
+        <div>
+            <span id="runMsg" class="secondary"></span>
+        </div>
+        <div style="width: 100%">
+            <details>
+                <summary style="width: 100%">
+                    <b>Schedule</b>
+                </summary>
+                <table style="width: 100%; overflow-y: scroll">
+                    <tr>
+                        <th>Name</th>
+                        <th>Action</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" placeholder="Name" id="newScheduleName" /></td>
+                        <td><button class="action" onclick="openSchedule()">Add</button></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </details>
+        </div>
+        <script>
+            onDataTypeChange(document.querySelector("#dataType").value);
+        </script>
+    </body>
+</html>
