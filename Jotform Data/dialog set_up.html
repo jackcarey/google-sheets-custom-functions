@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <base target="_top">
+  <?!= include('styles'); ?>
+  <?var callbackAction = (scriptCallback?"google.script.run."+scriptCallback+"();":"")+"google.script.host.close();"?>
+  <script>
+    function onSave(){
+     let apiVal = document.querySelector("#api").value;
+     if(apiVal){
+      google.script.run.withSuccessHandler(function(retVal,userObj){
+         document.getElementById("savedMsg").innerHTML = "Saved<br>";
+         <?!=callbackAction?>
+        }).withFailureHandler(function(error,userObj){
+         document.getElementById("savedMsg").innerHTML = error.message + "<br>";
+        }).withUserObject().saveAPIKey(apiVal);
+     }
+}
+
+function onClear(){
+google.script.run.withSuccessHandler(function(rV,uO){
+document.getElementById("savedMsg").innerHTML = "Cleared<br>";
+<?!=callbackAction?>
+}).clearData();
+}
+  </script>
+</head>
+
+<body>
+  <span>You must have an API key. Find out <a onclick="google.script.run.openDialog_Help()" title="Get Started Guide">how</a> to use one.</span>
+  <br>
+  <? if(apiStored){?>
+  <b>An API key is stored for this document ending '<?!= apiFragment?>'.</b>
+  <?}else{?>
+  <b>An API key is <i>not</i> stored for this document.</b>
+  <?}?>
+  <table>
+    <tr>
+      <td><label for="api">API key:</label></td>
+      <td><input id="api" type="text" autocomplete="off" placeholder="ABcdEf12345678901abCdEfGhIj4321" autofocus="on"/>
+      </td>
+    </tr>
+  </table>
+  <span class="secondary">Settings are saved per document. Be careful when using shared documents.</span>
+  <table>
+    <tr>
+      <td>
+        <button class="action" onclick="onSave()">Save</button>
+      </td>
+      <td>
+        <button onclick="<?!=callbackAction?>">Close</button>
+      </td>
+      <td>
+        <span id="savedMsg" class="secondary"></span>
+        <a class="secondary" href="#" target="" onclick="onClear();">Clear all data</a>
+      </td>
+    </tr>
+</body>
+
+</html>
