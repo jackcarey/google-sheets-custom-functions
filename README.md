@@ -1,6 +1,10 @@
 # google-sheets-custom-functions
 An incomplete list of custom functions I've made for Google Sheets. Documentation is found within each file.
 
+## Add-ons
+
+* **Jotform Data** - [Supported from 2018 - 2025](https://jackcarey.co.uk/projects/jotform-data/): Adds interfaces and custom functions that output a 2D array of form data from JotForm. Return user, form, submission, report & folder data. This add-on has no affiliation with JotForm Inc.​​
+
 ## Algorithms
 
 * **CRATE** - Sort options into groups so their sum is as close to a target as possible.
